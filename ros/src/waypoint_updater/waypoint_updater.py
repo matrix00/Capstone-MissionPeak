@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import numpy as np
 import rospy
 from geometry_msgs.msg import PoseStamped
 from styx_msgs.msg import Lane, Waypoint
@@ -50,13 +50,14 @@ class WaypointUpdater(object):
         while not rospy.is_shutdown():
             if self.pose and self.base_waypoints:
             #get closest waypoint
-                closet_waypoint_idx = self.get_closest_waypoint_idx()
+                closest_waypoint_idx = self.get_closest_waypoint_idx()
                 self.publish_waypoints(closest_waypoint_idx)
                 rate.sleep()
 
-    def get_closet_waypoint_id(self):
+    def get_closest_waypoint_idx(self):
         x = self.pose.pose.position.x
         y = self.pose.pose.position.y
+
         closest_idx = self.waypoint_tree.query([x,y], 1)[1]
 
         #check if closest is ahead or behind vehicle
@@ -79,6 +80,7 @@ class WaypointUpdater(object):
         lane.header = self.base_waypoints.header
         lane.waypoints = self.base_waypoints.waypoints[closest_idx:closest_idx+ LOOKAHEAD_WPS]
         self.final_waypoints_pub.publish(lane)
+	print (" lane ", lane) 
 
     def pose_cb(self, msg):
         # TODO: Implement
@@ -89,6 +91,7 @@ class WaypointUpdater(object):
         self.base_waypoints = waypoints
         if not self.waypoints_2d:
             self.waypoints_2d = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in waypoints.waypoints]
+            #print ("waypiont 2d ", self.waypoints_2d)
             self.waypoint_tree = KDTree(self.waypoints_2d)
 
     def traffic_cb(self, msg):
