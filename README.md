@@ -4,6 +4,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 
 ## Team: MissionPeak
 
+### Status: Completed
 
 <img src="imgs/mission-peak.jpg" alt="Mission Peak" height= "250" width="600"/>
 
